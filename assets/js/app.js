@@ -60,7 +60,6 @@ function renderCfg(){
     pk.appendChild(b);
   });
   $('#pkgDesc').textContent=P['d'+l];
-  const ch=$('#boothChip');if(ch){ch.hidden=!booth;if(booth)$('#boothChipT').textContent=BT.chip[l==='ar'?1:0]+booth.t[l==='ar'?1:0]+' · '+booth.size[l==='ar'?1:0]}
   const ul=$('#items'); ul.textContent='';
   DIVS.forEach(d=>{
     const inc=P.inc.includes(d.id), on=isOn(P,d.id);
@@ -122,7 +121,6 @@ function updateMail(){
   const onDivs=DIVS.filter(d=>isOn(P,d.id));
   const base=onDivs.filter(d=>P.inc.includes(d.id)), adds=onDivs.filter(d=>!P.inc.includes(d.id));
   const lines=[B[0]+': '+P[l]];
-  if(booth) lines.push(BT.bl[l==='ar'?1:0]+': '+booth.t[l==='ar'?1:0]+' — '+booth.size[l==='ar'?1:0]);
   if(custom) lines.push(B[3]+': '+(adds.map(d=>d[l]).join(sep)||T.none[l]));
   else lines.push(B[1]+': '+base.map(d=>d[l]).join(sep), B[2]+': '+(adds.map(d=>d[l]).join(sep)||T.none[l]));
   const svc=onDivs.map(d=>{const c=chosen(d.id,l);return c.length?'  - '+d[l]+': '+c.join(sep):null}).filter(Boolean);
@@ -222,74 +220,6 @@ function setLang(l){
 }
 
 
-
-/* ===== exhibition booths ===== */
-const BOOTHS=[
- {id:'b9',img:'b9',fit:1,sheets:['s9'],
-  size:['9 sqm · 3000 × 3000 mm','9 م² · 3000 × 3000 مم'],
-  t:['Compact wooden booth','جناح خشبي مدمج'],
-  inc:[['Branded fascia and back wall','لوحة علوية وجدار خلفي بعلامتكم'],['Information counter, round table and 2 chairs','كاونتر معلومات وطاولة دائرية وكرسيان'],['LED strip and spotlights, carpet flooring','شريط LED وسبوتات، وأرضية سجاد'],['Power outlet and planter','مخرج كهرباء وحوض نباتات']]},
- {id:'b18',img:'b18',sheets:['s18','s18alt'],
-  size:['18 sqm · 6000 × 3000 mm','18 م² · 6000 × 3000 مم'],
-  t:['Enhanced booth','جناح مُحسَّن'],
-  inc:[['Branded wall with logo and graphic','جدار بشعار وتصميم جرافيك'],['Reception counter with storage','كاونتر استقبال مع تخزين'],['Meeting table with 4 chairs, display shelves','طاولة اجتماعات بأربعة كراسي، ورفوف عرض'],['65" screen-ready provision, spot and cove lighting','تجهيز لشاشة 65 بوصة، وإضاءة سبوت وكوف'],['Wood structure, or aluminium frame with white panels','هيكل خشبي، أو إطار ألمنيوم بألواح بيضاء']]},
- {id:'b36w',img:'b36w',sheets:['s36w'],
-  size:['36 sqm · 6000 × 6000 mm','36 م² · 6000 × 6000 مم'],
-  t:['Custom-enhanced wood structure','هيكل خشبي مخصص مُحسَّن'],
-  inc:[['Reception counter with storage','كاونتر استقبال مع تخزين'],['Lounge area, meeting table with 4 chairs','ركن جلوس وطاولة اجتماعات بأربعة كراسي'],['Display shelves and lockable storage cabinet','رفوف عرض وخزانة تخزين بقفل'],['65" screen provision, enhanced LED lighting','تجهيز شاشة 65 بوصة وإضاءة LED مُحسَّنة']]},
- {id:'b36s',img:'b36s',sheets:['s36s'],
-  size:['36 sqm · 6000 × 6000 mm','36 م² · 6000 × 6000 مم'],
-  t:['Signature curved concept','تصميم منحنٍ مميّز'],
-  inc:[['Curved structure with backlit graphics','هيكل منحنٍ مع جرافيك مضاء من الخلف'],['Reception counter and information desk','كاونتر استقبال ومكتب معلومات'],['Lounge, meeting area and large screen','ركن جلوس ومنطقة اجتماعات وشاشة كبيرة'],['Downlights, cove and LED strip lighting','إضاءة دَون لايت وكوف وشريط LED']]},
- {id:'b54',img:'b54',sheets:['s54'],
-  size:['54–100 sqm · up to 4000 mm high','54–100 م² · ارتفاع حتى 4000 مم'],
-  t:['Premium custom build','تنفيذ مخصص فاخر'],
-  inc:[['Branded feature walls and graphics','جدران مميزة وجرافيك بعلامتكم'],['Reception, lounge and meeting area for 6','استقبال وركن جلوس ومنطقة اجتماعات لستة أشخاص'],['Multiple screens and a storage room','شاشات متعددة وغرفة تخزين'],['Accent, cove, pendant and spot lighting','إضاءة مميّزة وكوف وبندنت وسبوت']]}
-];
-const BT={view:['View drawings','عرض المخططات'],quote:['Request a quote','اطلب عرض سعر'],tag:['Illustrative concept','تصميم توضيحي'],
-  more:['Another size or a different look?','مقاس آخر أو شكل مختلف؟'],moreP:['Tell us your booth number, size and venue and we will design to it.','أخبرنا برقم الجناح ومقاسه والموقع وسنصمّم وفقاً له.'],
-  moreB:['Talk to us','تحدّث معنا'],chip:['Booth: ','الجناح: '],bl:['Booth','الجناح'],of:[' of ',' من ']};
-let booth=null;
-(function(){
-  const g=document.getElementById('boothGrid');if(!g)return;
-  const bi=(a,b)=>{const s=document.createElement('span');s.setAttribute('data-en',a);s.setAttribute('data-ar',b);s.textContent=a;return s};
-  BOOTHS.forEach(b=>{
-    const c=document.createElement('article');c.className='booth';
-    const im=document.createElement('button');im.type='button';im.className='booth-img'+(b.fit?' fit':'');
-    im.setAttribute('aria-label',b.t[0]);
-    const x=document.createElement('img');x.src='assets/img/booths/'+b.img+'.webp';x.alt=b.t[0]+' ('+b.size[0]+')';x.loading='lazy';x.decoding='async';
-    const tg=bi(BT.tag[0],BT.tag[1]);tg.className='booth-tag';
-    im.append(x,tg);im.addEventListener('click',()=>openLb(b,0));
-    const bd=document.createElement('div');bd.className='booth-body';
-    const sz=bi(b.size[0],b.size[1]);sz.className='booth-size';
-    const h=document.createElement('h3');h.setAttribute('data-en',b.t[0]);h.setAttribute('data-ar',b.t[1]);h.textContent=b.t[0];
-    const ul=document.createElement('ul');b.inc.forEach(i=>{const li=document.createElement('li');li.setAttribute('data-en',i[0]);li.setAttribute('data-ar',i[1]);li.textContent=i[0];ul.appendChild(li)});
-    const ac=document.createElement('div');ac.className='booth-act';
-    const v=document.createElement('button');v.type='button';v.className='pill ghost';v.setAttribute('data-en',BT.view[0]);v.setAttribute('data-ar',BT.view[1]);v.textContent=BT.view[0];v.addEventListener('click',()=>openLb(b,0));
-    const q=document.createElement('button');q.type='button';q.className='pill ink';q.setAttribute('data-en',BT.quote[0]);q.setAttribute('data-ar',BT.quote[1]);q.textContent=BT.quote[0];
-    q.addEventListener('click',()=>{booth=b;pkg='brand';addons.clear();subs.clear();open.clear();renderCfg();document.getElementById('config').scrollIntoView({behavior:'smooth'})});
-    ac.append(v,q);bd.append(sz,h,ul,ac);c.append(im,bd);g.appendChild(c);
-  });
-  const m=document.createElement('article');m.className='booth booth-more';
-  const mh=document.createElement('h3');mh.setAttribute('data-en',BT.more[0]);mh.setAttribute('data-ar',BT.more[1]);mh.textContent=BT.more[0];
-  const mp=document.createElement('p');mp.setAttribute('data-en',BT.moreP[0]);mp.setAttribute('data-ar',BT.moreP[1]);mp.textContent=BT.moreP[0];
-  const mb=document.createElement('a');mb.className='pill light';mb.href='#brief';mb.setAttribute('data-en',BT.moreB[0]);mb.setAttribute('data-ar',BT.moreB[1]);mb.textContent=BT.moreB[0];
-  m.append(mh,mp,mb);g.appendChild(m);
-  /* lightbox */
-  const lb=$('#lb'),li=$('#lbImg'),cp=$('#lbCap');let cur=null,ix=0,last=null;
-  function show(){const l=L();li.src='assets/img/booths/'+cur.sheets[ix]+'.webp';li.alt=cur.t[l==='ar'?1:0];
-    cp.textContent=cur.t[l==='ar'?1:0]+' · '+cur.size[l==='ar'?1:0]+(cur.sheets.length>1?'  ('+(ix+1)+'/'+cur.sheets.length+')':'');
-    $('#lbP').hidden=$('#lbN').hidden=cur.sheets.length<2}
-  window.openLb=(b,i)=>{cur=b;ix=i;last=document.activeElement;show();lb.hidden=false;document.body.style.overflow='hidden';$('#lbX').focus()};
-  function closeLb(){lb.hidden=true;document.body.style.overflow='';if(last)last.focus()}
-  $('#lbX').addEventListener('click',closeLb);
-  lb.addEventListener('click',e=>{if(e.target===lb)closeLb()});
-  $('#lbP').addEventListener('click',()=>{ix=(ix+cur.sheets.length-1)%cur.sheets.length;show()});
-  $('#lbN').addEventListener('click',()=>{ix=(ix+1)%cur.sheets.length;show()});
-  addEventListener('keydown',e=>{if(lb.hidden)return;if(e.key==='Escape')closeLb();if(e.key==='ArrowLeft'&&cur.sheets.length>1)$('#lbP').click();if(e.key==='ArrowRight'&&cur.sheets.length>1)$('#lbN').click()});
-})();
-$('#boothChipX').addEventListener('click',()=>{booth=null;renderCfg()});
-
 /* ===== work gallery from the story photos ===== */
 (function(){
   const g=document.getElementById('workGrid');if(!g)return;
@@ -301,17 +231,6 @@ $('#boothChipX').addEventListener('click',()=>{booth=null;renderCfg()});
     const b=document.createElement('b');b.textContent=c[0];
     const n=document.createElement('span');n.setAttribute('data-en',c[1]);n.setAttribute('data-ar',c[2]);n.textContent=c[1];
     t.appendChild(b);t.appendChild(n);f.appendChild(x);f.appendChild(t);g.appendChild(f);
-    if(i===2){
-      const tag=document.createElement('span');tag.className='more-tag';tag.setAttribute('data-en','Exhibition booths +');tag.setAttribute('data-ar','أجنحة المعارض +');tag.textContent='Exhibition booths +';
-      f.appendChild(tag);f.classList.add('has-more');f.tabIndex=0;f.setAttribute('role','button');f.setAttribute('aria-controls','booths');f.setAttribute('aria-expanded','false');
-      const pn=document.getElementById('booths');
-      const tog=on=>{pn.hidden=!on;f.setAttribute('aria-expanded',String(on));if(on)setTimeout(()=>pn.scrollIntoView({behavior:'smooth',block:'start'}),30)};
-      f.addEventListener('click',()=>tog(pn.hidden));
-      f.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();tog(pn.hidden)}});
-      document.getElementById('bpClose').addEventListener('click',()=>{tog(false);f.scrollIntoView({behavior:'smooth',block:'center'})});
-      window.openBooths=()=>tog(true);
-      if(location.hash==='#booths')tog(true);
-    }
   });
 })();
 /* ===== whatsapp ===== */
