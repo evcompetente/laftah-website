@@ -301,6 +301,17 @@ $('#boothChipX').addEventListener('click',()=>{booth=null;renderCfg()});
     const b=document.createElement('b');b.textContent=c[0];
     const n=document.createElement('span');n.setAttribute('data-en',c[1]);n.setAttribute('data-ar',c[2]);n.textContent=c[1];
     t.appendChild(b);t.appendChild(n);f.appendChild(x);f.appendChild(t);g.appendChild(f);
+    if(i===2){
+      const tag=document.createElement('span');tag.className='more-tag';tag.setAttribute('data-en','Exhibition booths +');tag.setAttribute('data-ar','أجنحة المعارض +');tag.textContent='Exhibition booths +';
+      f.appendChild(tag);f.classList.add('has-more');f.tabIndex=0;f.setAttribute('role','button');f.setAttribute('aria-controls','booths');f.setAttribute('aria-expanded','false');
+      const pn=document.getElementById('booths');
+      const tog=on=>{pn.hidden=!on;f.setAttribute('aria-expanded',String(on));if(on)setTimeout(()=>pn.scrollIntoView({behavior:'smooth',block:'start'}),30)};
+      f.addEventListener('click',()=>tog(pn.hidden));
+      f.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();tog(pn.hidden)}});
+      document.getElementById('bpClose').addEventListener('click',()=>{tog(false);f.scrollIntoView({behavior:'smooth',block:'center'})});
+      window.openBooths=()=>tog(true);
+      if(location.hash==='#booths')tog(true);
+    }
   });
 })();
 /* ===== whatsapp ===== */
