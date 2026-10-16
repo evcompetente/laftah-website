@@ -212,6 +212,7 @@ function setLang(l){
   document.documentElement.lang=l;
   document.documentElement.dir=l==='ar'?'rtl':'ltr';
   $$('[data-en][data-ar]').forEach(el=>{el.textContent=el.dataset[l]});
+  $$('[data-href-en][data-href-ar]').forEach(el=>{el.setAttribute('href',el.dataset[l==='ar'?'hrefAr':'hrefEn'])});
   $$('[data-pen]').forEach(el=>{el.placeholder=el.dataset['p'+l]});
   langBtn.textContent=l==='ar'?'English':'عربي';
   syncMore();syncStory();renderCfg();introText();waSync();if($('#reqHint').textContent)checkYou(true);if(sentMode)showSent(sentMode);
