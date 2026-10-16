@@ -128,6 +128,25 @@
   </div>
 </section>
 
+<section class="booths" id="booths">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <p class="eyebrow" data-en="Exhibition booths" data-ar="أجنحة المعارض">Exhibition booths</p>
+      <h2 data-en="Booths designed, built and branded for you." data-ar="أجنحة نصمّمها ونبنيها ونطبع عليها علامتكم.">Booths designed, built and branded for you.</h2>
+      <p data-en="Five starting points, from a compact 9 sqm stand to a premium 100 sqm build. Every one is adapted to your brand, your venue and your exhibition rules." data-ar="خمس نقاط انطلاق، من جناح مدمج بمساحة 9 م² إلى جناح فاخر بمساحة 100 م². كلٌّ منها يُكيَّف مع علامتكم وموقعكم وأنظمة المعرض.">Five starting points, from a compact 9 sqm stand to a premium 100 sqm build. Every one is adapted to your brand, your venue and your exhibition rules.</p>
+    </div>
+    <div class="booth-grid rv" id="boothGrid"></div>
+    <p class="note booth-note" data-en="Illustrative concepts with sample branding. Sizes, finishes and inclusions are confirmed in your quotation." data-ar="تصاميم توضيحية بعلامة تجريبية. تُؤكَّد المقاسات والتشطيبات والمشمولات في عرض السعر.">Illustrative concepts with sample branding. Sizes, finishes and inclusions are confirmed in your quotation.</p>
+  </div>
+</section>
+<div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Booth drawings">
+  <button class="lb-x" id="lbX" type="button" aria-label="Close">×</button>
+  <button class="lb-n lb-prev" id="lbP" type="button" aria-label="Previous">‹</button>
+  <img id="lbImg" alt=""/>
+  <button class="lb-n lb-next" id="lbN" type="button" aria-label="Next">›</button>
+  <p class="lb-cap" id="lbCap"></p>
+</div>
+
 <section class="about" id="about">
   <div class="wrap about-grid">
     <div class="rv">
@@ -156,6 +175,7 @@
       <div class="cfg-card">
         <div class="pkgs" role="radiogroup" aria-label="Package" id="pkgs"></div>
         <p class="pkg-desc" id="pkgDesc"></p>
+        <p class="boothchip" id="boothChip" hidden><span id="boothChipT"></span><button type="button" id="boothChipX" aria-label="Remove">×</button></p>
         <ul class="items" id="items"></ul>
         <p class="note" data-en="Included items are locked for each set package, and any other division can be switched on as an add-on. Choose Custom to pick your own, and use Refine to narrow any division to specific services. Final inclusions and exclusions are set per project in the quotation." data-ar="البنود المشمولة ثابتة في كل باقة جاهزة، ويمكن تفعيل أي قسم آخر كإضافة. اختر «مخصصة» لتحديد ما تريد، واستخدم «تخصيص» لتحديد خدمات بعينها داخل أي قسم. تُحدَّد البنود المشمولة والمستثناة نهائياً لكل مشروع في عرض السعر.">Included items are locked for each set package, and any other division can be switched on as an add-on. Choose Custom to pick your own, and use Refine to narrow any division to specific services. Final inclusions and exclusions are set per project in the quotation.</p>
       </div>
@@ -259,6 +279,6 @@
 
 
 <script src="assets/js/config.js"></script>
-<script src="assets/js/app.js?v=2"></script>
+<script src="assets/js/app.js?v=3"></script>
 </body>
 </html>
