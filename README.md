@@ -7,4 +7,4 @@ Bilingual (EN/AR) one-page site. Upload the whole folder to the web root of laft
 - `assets/js/config.js` — form endpoint
 - `LAFTAH_Original_Website_Animated_Graph_Background.html` — earlier original, kept untouched
 
-Not in this repo (kept out while it is public): intro videos (`assets/video/`), photos and poster (`assets/img/`, `assets/poster.webp`). Add them from the site zip before deploying.
+Media: intro videos in `assets/video/`, photos in `assets/img/`, poster in `assets/poster.webp`. The intro video is a third-party sample and the event photos show other organisations; replace or get permission before launch.
