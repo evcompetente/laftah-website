@@ -972,7 +972,7 @@ body:hover .cursor-glow{
   inset:-4% -3% -6% -3%;
   z-index:0;
   pointer-events:none;
-  opacity:.85;
+  opacity:1;
   mix-blend-mode:multiply;
 }
 
@@ -990,7 +990,7 @@ body:hover .cursor-glow{
   content:"";
   position:absolute;
   inset:0;
-  background:linear-gradient(180deg, rgba(247,242,232,.32), rgba(247,242,232,.58));
+  background:linear-gradient(180deg, rgba(247,242,232,.04), rgba(247,242,232,.10));
 }
 
 .hero-network-bg canvas{
@@ -1010,7 +1010,7 @@ body:hover .cursor-glow{
 @media(max-width:900px){
   .hero-network-bg{
     inset:-2% -8% -2% -8%;
-    opacity:.72;
+    opacity:.94;
   }
 }
 
@@ -1481,13 +1481,13 @@ function initHeroNetwork(){
 
   function createNodes(){
     const area = width * height;
-    const count = Math.max(22, Math.min(48, Math.round(area / 28000)));
+    const count = Math.max(22, Math.min(48, Math.round(area / 21000)));
     nodes = Array.from({ length: count }, (_, i) => ({
       x: Math.random() * width,
       y: Math.random() * height,
       vx: (Math.random() - 0.5) * (reducedMotion ? 0.02 : 0.18),
       vy: (Math.random() - 0.5) * (reducedMotion ? 0.02 : 0.18),
-      r: Math.random() * 3.2 + 1.2,
+      r: Math.random() * 3.7 + 2.0,
       mass: Math.random() * 0.5 + 0.75,
       emphasis: i % 7 === 0
     }));
@@ -1510,10 +1510,10 @@ function initHeroNetwork(){
         const dx = a.x - b.x;
         const dy = a.y - b.y;
         const dist = Math.hypot(dx, dy);
-        const maxDist = 170;
+        const maxDist = 205;
         if (dist < maxDist) {
           const alpha = 1 - dist / maxDist;
-          ctx.strokeStyle = a.emphasis || b.emphasis ? `rgba(59,39,26,${0.06 + alpha * 0.24})` : `rgba(111,115,81,${0.04 + alpha * 0.14})`;
+          ctx.strokeStyle = a.emphasis || b.emphasis ? `rgba(59,39,26,${0.19 + alpha * 0.40})` : `rgba(111,115,81,${0.13 + alpha * 0.28})`;
           ctx.lineWidth = a.emphasis || b.emphasis ? 1.05 : 0.75;
           ctx.beginPath();
           ctx.moveTo(a.x, a.y);
@@ -1560,14 +1560,14 @@ function initHeroNetwork(){
     rafId = requestAnimationFrame(step);
   }
 
-  wrap.addEventListener('mousemove', event => {
+  wrap.parentElement.addEventListener('mousemove', event => {
     const rect = wrap.getBoundingClientRect();
     pointer.x = event.clientX - rect.left;
     pointer.y = event.clientY - rect.top;
     pointer.active = true;
   }, { passive:true });
 
-  wrap.addEventListener('mouseleave', () => {
+  wrap.parentElement.addEventListener('mouseleave', () => {
     pointer.active = false;
   });
 
