@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex, nofollow"/>
+<title>LAFTAH Admin</title>
+<link rel="icon" href="../assets/logo.svg"/>
+<link rel="stylesheet" href="admin.css"/>
+</head>
+<body>
+<div id="gate" class="gate">
+  <form id="gateForm" class="gate-card" autocomplete="off">
+    <img class="gate-logo" src="../assets/logo.svg" alt="LAFTAH"/>
+    <h1>Website admin</h1>
+    <p class="muted">Sign in with a GitHub access token for this website's repository. Only people who hold a token can change the site.</p>
+    <label>Repository<input id="gRepo" value="evcompetente/laftah-website" required spellcheck="false"/></label>
+    <label>Branch<input id="gBranch" value="main" required spellcheck="false"/></label>
+    <label>Access token<input id="gToken" type="password" required spellcheck="false" placeholder="github_pat_…"/></label>
+    <label class="chk"><input id="gRemember" type="checkbox"/> Remember on this device</label>
+    <p id="gErr" class="err" role="alert"></p>
+    <button class="btn primary" id="gBtn" type="submit">Sign in</button>
+    <details class="help"><summary>How do I get a token?</summary>
+      <ol>
+        <li>On GitHub open <b>Settings → Developer settings → Fine-grained tokens → Generate new token</b>.</li>
+        <li>Choose <b>Only select repositories</b> and pick <b>laftah-website</b>.</li>
+        <li>Under <b>Repository permissions</b> set <b>Contents</b> to <b>Read and write</b>. Leave everything else off.</li>
+        <li>Pick an expiry, generate it, and paste it here. It is shown only once.</li>
+      </ol>
+    </details>
+  </form>
+</div>
+
+<div id="app" class="app" hidden>
+  <aside class="side" id="side">
+    <div class="side-brand"><img src="../assets/logo.svg" alt=""/><span>LAFTAH <small>Admin</small></span></div>
+    <nav id="nav"></nav>
+    <div class="side-foot">
+      <button class="btn ghost-l" id="btnPreview" type="button">Preview draft</button>
+      <button class="btn primary" id="btnPublish" type="button">Publish <span id="dirtyDot" class="dot" hidden></span></button>
+      <button class="link-l" id="btnOut" type="button">Sign out</button>
+    </div>
+  </aside>
+  <main class="main" id="main" tabindex="-1"></main>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<script src="admin.js"></script>
+</body>
+</html>

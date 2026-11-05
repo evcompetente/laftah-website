@@ -3,36 +3,10 @@ const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const L=()=>document.documentElement.lang;
 
 /* ===== configurator data ===== */
-const DIVS=[
- {id:'coord',en:'Coordination & concept support',ar:'التنسيق ودعم الفكرة'},
- {id:'fnb',en:'Catering & F&B',ar:'الضيافة والمأكولات والمشروبات'},
- {id:'rent',en:'Furniture & rentals',ar:'الأثاث والتأجير'},
- {id:'crew',en:'Crew & hosts',ar:'الطاقم والمضيفون'},
- {id:'prod',en:'Custom counter / booth production',ar:'كاونتر أو جناح مخصص'},
- {id:'avl',en:'Audio, video & lighting',ar:'الصوت والصورة والإضاءة'}
-];
-const SUBS={
- coord:[['Event planning','تخطيط الفعاليات'],['Supplier management','إدارة الموردين'],['Show flow','مسار العرض'],['On-ground execution','التنفيذ الميداني'],['Closeout reporting','تقرير الإغلاق']],
- fnb:[['Corporate catering','ضيافة الشركات'],['VIP hospitality','ضيافة كبار الشخصيات'],['Coffee breaks','استراحات القهوة'],['Saudi welcome service','الضيافة السعودية'],['F&B activations','تفعيلات المأكولات والمشروبات'],['Private dining','العشاء الخاص'],['Crew meals','وجبات الطاقم']],
- rent:[['Lounge setups','جلسات ضيافة'],['Tables & chairs','طاولات وكراسي'],['Counters & service stations','كاونترات ومحطات خدمة'],['Decor assets','عناصر ديكور'],['Event equipment','معدات فعاليات']],
- crew:[['Hosts','مضيفون'],['Ushers','منظمون'],['Waiters','نُدُل'],['Baristas','باريستا'],['Runners & loaders','مساعدون وعمال تحميل'],['Technicians','تقنيون'],['Supervisors','مشرفون'],['Event managers','مديرو فعاليات']],
- prod:[['Wood counters','كاونترات خشبية'],['Booths','أجنحة'],['Backdrops','خلفيات'],['Stages','منصات'],['Branded installations','تركيبات تحمل الهوية'],['Scenic builds','أعمال ديكورية'],['Product displays','عروض منتجات']],
- avl:[['Audio','صوت'],['Video','فيديو'],['Lighting','إضاءة'],['Screens','شاشات'],['Microphones','ميكروفونات'],['Technical crew','طاقم تقني'],['Show support','دعم أثناء العرض']]
-};
-const PKGS=[
- {id:'corp',en:'Corporate Essentials',ar:'أساسيات الشركات',inc:['coord','fnb','rent','crew'],
-  den:'For meetings, trainings, and executive lunches. Includes coordination, catering, furniture, crew, and delivery.',
-  dar:'للاجتماعات، التدريبات، ووجبات الغداء التنفيذية. يشمل التنسيق، الضيافة، الأثاث، الطاقم، والتوصيل.'},
- {id:'brand',en:'Brand Activation Support',ar:'دعم تفعيل العلامات',inc:['coord','fnb','crew','prod','avl'],
-  den:'For product launches, retail activations, and pop-ups. Includes concept support, custom counter/booth, F&B, hosts, and AVL.',
-  dar:'لإطلاق المنتجات، التفعيلات التجارية، والمتاجر المؤقتة. يشمل دعم الفكرة، كاونتر أو جناح مخصص، الضيافة، المضيفين، والتقنيات.'},
- {id:'full',en:'Full Event Delivery',ar:'تنفيذ الفعالية بالكامل',inc:['coord','fnb','rent','crew','prod','avl'],
-  den:'For clients needing one accountable partner. Includes events, hospitality, production, AVL, rentals, and manpower.',
-  dar:'للعملاء الذين يحتاجون إلى شريك واحد مسؤول. يشمل الفعاليات، الضيافة، الإنتاج، التقنيات، التأجير، والقوى العاملة.'},
- {id:'custom',en:'Custom',ar:'مخصصة',inc:[],
-  den:'Build your own. Switch on the divisions you need.',
-  dar:'صمّم باقتك الخاصة. فعّل الأقسام التي تحتاجها.'}
-];
+const CC=window.LAFTAH_CONTENT||{};
+const DIVS=(CC.divisions||[]).map(d=>({id:d.id,en:d.en,ar:d.ar}));
+const SUBS={};(CC.divisions||[]).forEach(d=>{SUBS[d.id]=(d.subs||[]).map(x=>[x.en,x.ar])});
+const PKGS=CC.packages||[];
 const T={included:{en:'Included',ar:'مشمول'},addon:{en:'Add-on',ar:'إضافة'},sel:{en:'Selected',ar:'محدد'},
   refine:{en:'Refine',ar:'تخصيص'},
   count:{en:(n,a)=>n+' included'+(a?' · '+a+' add-on'+(a>1?'s':''):''),ar:(n,a)=>n+' مشمول'+(a?' · '+a+' إضافة':'')},
@@ -134,7 +108,7 @@ function updateMail(){
   lines.push('',B[9]+': ',B[5]+': '+v('fDate'),B[6]+': '+v('fVenue'),B[7]+': '+v('fGuests'));
   const subject=T.subj[l]+' — '+P[l];
   window.__brief={subject,body:lines.join('\n'),pkg:P[l]};
-  $('#sumCta').href='mailto:info@laftah.me?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(lines.join('\n'));
+  $('#sumCta').href='mailto:'+((CC.settings||{}).email||'info@laftah.me')+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(lines.join('\n'));
 }
 ['fDate','fVenue','fGuests','fName','fPhone','fMail','fCo'].forEach(id=>$('#'+id).addEventListener('input',()=>{updateMail();if($('#'+id).getAttribute('aria-invalid')==='true')checkYou(false)}));
 $('#fPref').addEventListener('change',updateMail);
@@ -161,7 +135,7 @@ function showSent(mode){
   $('#sentText').textContent=T2[1].replace('%PREF%',pref);
   $('#sentWa').textContent=l==='ar'?'أرسل الطلب عبر واتساب':'Send it on WhatsApp';
   const b=window.__brief||{subject:'',body:''};
-  $('#sentWa').href='https://wa.me/966565616566?text='+encodeURIComponent(b.subject+'\n\n'+b.body);
+  $('#sentWa').href='https://wa.me/'+String((CC.settings||{}).whatsapp||'966565616566').replace(/\D/g,'')+'?text='+encodeURIComponent(b.subject+'\n\n'+b.body);
   document.querySelector('.summary').classList.add('is-sent');
   $('#sentBox').hidden=false;
   $('#sentBox').scrollIntoView({block:'nearest',behavior:'smooth'});
@@ -224,28 +198,7 @@ function setLang(l){
 
 
 /* ===== exhibition booths ===== */
-const BOOTHS=[
- {id:'b9',img:'b9',fit:1,sheets:['s9'],
-  size:['9 sqm · 3000 × 3000 mm','9 م² · 3000 × 3000 مم'],
-  t:['Compact wooden booth','جناح خشبي مدمج'],
-  inc:[['Branded fascia and back wall','لوحة علوية وجدار خلفي بعلامتكم'],['Information counter, round table and 2 chairs','كاونتر معلومات وطاولة دائرية وكرسيان'],['LED strip and spotlights, carpet flooring','شريط LED وسبوتات، وأرضية سجاد'],['Power outlet and planter','مخرج كهرباء وحوض نباتات']]},
- {id:'b18',img:'b18',sheets:['s18','s18alt'],
-  size:['18 sqm · 6000 × 3000 mm','18 م² · 6000 × 3000 مم'],
-  t:['Enhanced booth','جناح مُحسَّن'],
-  inc:[['Branded wall with logo and graphic','جدار بشعار وتصميم جرافيك'],['Reception counter with storage','كاونتر استقبال مع تخزين'],['Meeting table with 4 chairs, display shelves','طاولة اجتماعات بأربعة كراسي، ورفوف عرض'],['65" screen-ready provision, spot and cove lighting','تجهيز لشاشة 65 بوصة، وإضاءة سبوت وكوف'],['Wood structure, or aluminium frame with white panels','هيكل خشبي، أو إطار ألمنيوم بألواح بيضاء']]},
- {id:'b36w',img:'b36w',sheets:['s36w'],
-  size:['36 sqm · 6000 × 6000 mm','36 م² · 6000 × 6000 مم'],
-  t:['Custom-enhanced wood structure','هيكل خشبي مخصص مُحسَّن'],
-  inc:[['Reception counter with storage','كاونتر استقبال مع تخزين'],['Lounge area, meeting table with 4 chairs','ركن جلوس وطاولة اجتماعات بأربعة كراسي'],['Display shelves and lockable storage cabinet','رفوف عرض وخزانة تخزين بقفل'],['65" screen provision, enhanced LED lighting','تجهيز شاشة 65 بوصة وإضاءة LED مُحسَّنة']]},
- {id:'b36s',img:'b36s',sheets:['s36s'],
-  size:['36 sqm · 6000 × 6000 mm','36 م² · 6000 × 6000 مم'],
-  t:['Signature curved concept','تصميم منحنٍ مميّز'],
-  inc:[['Curved structure with backlit graphics','هيكل منحنٍ مع جرافيك مضاء من الخلف'],['Reception counter and information desk','كاونتر استقبال ومكتب معلومات'],['Lounge, meeting area and large screen','ركن جلوس ومنطقة اجتماعات وشاشة كبيرة'],['Downlights, cove and LED strip lighting','إضاءة دَون لايت وكوف وشريط LED']]},
- {id:'b54',img:'b54',sheets:['s54'],
-  size:['54–100 sqm · up to 4000 mm high','54–100 م² · ارتفاع حتى 4000 مم'],
-  t:['Premium custom build','تنفيذ مخصص فاخر'],
-  inc:[['Branded feature walls and graphics','جدران مميزة وجرافيك بعلامتكم'],['Reception, lounge and meeting area for 6','استقبال وركن جلوس ومنطقة اجتماعات لستة أشخاص'],['Multiple screens and a storage room','شاشات متعددة وغرفة تخزين'],['Accent, cove, pendant and spot lighting','إضاءة مميّزة وكوف وبندنت وسبوت']]}
-];
+const BOOTHS=(CC.booths||[]).map(b=>({id:b.id,img:b.img,fit:b.fit,sheets:b.sheets||[],size:[b.sizeEn,b.sizeAr],t:[b.en,b.ar],inc:(b.inc||[]).map(i=>[i.en,i.ar])}));
 const BT={view:['View drawings','عرض المخططات'],quote:['Request a quote','اطلب عرض سعر'],tag:['Illustrative concept','تصميم توضيحي'],
   more:['Another size or a different look?','مقاس آخر أو شكل مختلف؟'],moreP:['Tell us your booth number, size and venue and we will design to it.','أخبرنا برقم الجناح ومقاسه والموقع وسنصمّم وفقاً له.'],
   moreB:['Talk to us','تحدّث معنا'],chip:['Booth: ','الجناح: '],bl:['Booth','الجناح'],of:[' of ',' من ']};
@@ -257,7 +210,7 @@ let booth=null;
     const c=document.createElement('article');c.className='booth';
     const im=document.createElement('button');im.type='button';im.className='booth-img'+(b.fit?' fit':'');
     im.setAttribute('aria-label',b.t[0]);
-    const x=document.createElement('img');x.src='assets/img/booths/'+b.img+'.webp';x.alt=b.t[0]+' ('+b.size[0]+')';x.loading='lazy';x.decoding='async';
+    const x=document.createElement('img');x.src=b.img;x.alt=b.t[0]+' ('+b.size[0]+')';x.loading='lazy';x.decoding='async';
     const tg=bi(BT.tag[0],BT.tag[1]);tg.className='booth-tag';
     im.append(x,tg);im.addEventListener('click',()=>openLb(b,0));
     const bd=document.createElement('div');bd.className='booth-body';
@@ -277,7 +230,7 @@ let booth=null;
   m.append(mh,mp,mb);g.appendChild(m);
   /* lightbox */
   const lb=$('#lb'),li=$('#lbImg'),cp=$('#lbCap');let cur=null,ix=0,last=null;
-  function show(){const l=L();li.src='assets/img/booths/'+cur.sheets[ix]+'.webp';li.alt=cur.t[l==='ar'?1:0];
+  function show(){const l=L();li.src=cur.sheets[ix];li.alt=cur.t[l==='ar'?1:0];
     cp.textContent=cur.t[l==='ar'?1:0]+' · '+cur.size[l==='ar'?1:0]+(cur.sheets.length>1?'  ('+(ix+1)+'/'+cur.sheets.length+')':'');
     $('#lbP').hidden=$('#lbN').hidden=cur.sheets.length<2}
   window.openLb=(b,i)=>{cur=b;ix=i;last=document.activeElement;show();lb.hidden=false;document.body.style.overflow='hidden';$('#lbX').focus()};
@@ -293,7 +246,7 @@ $('#boothChipX').addEventListener('click',()=>{booth=null;renderCfg()});
 /* ===== work gallery from the story photos ===== */
 (function(){
   const g=document.getElementById('workGrid');if(!g)return;
-  const cap=[['01','Events','الفعاليات'],['02','Experiences','التجارب'],['03','Production','الإنتاج'],['04','Technical','التقنيات'],['05','Rentals','التأجير'],['06','Crew','الطاقم']];
+  const cap=(CC.photos||[]).map((p,i)=>['0'+(i+1),p.en,p.ar]);
   [...document.querySelectorAll('.story-photo img')].forEach((im,i)=>{
     const f=document.createElement('figure'),c=cap[i];
     const x=document.createElement('img');x.src=im.src;x.alt='';x.loading='lazy';x.decoding='async';x.setAttribute('style',im.getAttribute('style')||'');x.style.transform='';
@@ -319,7 +272,7 @@ const waFab=document.getElementById('waFab');
 function waSync(){
   const l=document.documentElement.lang;
   const msg=l==='ar'?'مرحباً لفتة للتجارب، أود الاستفسار عن فعالية.':'Hello LAFTAH Experiences, I would like to ask about an event.';
-  document.querySelectorAll('a[href^="https://wa.me/"]:not(.wa-brief)').forEach(a=>a.href='https://wa.me/966565616566?text='+encodeURIComponent(msg));
+  document.querySelectorAll('a[href^="https://wa.me/"]:not(.wa-brief)').forEach(a=>a.href='https://wa.me/'+String((CC.settings||{}).whatsapp||'966565616566').replace(/\D/g,'')+'?text='+encodeURIComponent(msg));
 }
 addEventListener('scroll',()=>{waFab.classList.toggle('show',scrollY>innerHeight*0.9)},{passive:true});
 
