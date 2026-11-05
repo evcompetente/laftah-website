@@ -3,7 +3,7 @@
   var C=window.LAFTAH_CONTENT||{};
   var preview=false;
   try{
-    if(/[?&]preview=1/.test(location.search)){
+    if(/[?&]preview=1/.test(location.search)||location.hash==='#preview'){
       var d=JSON.parse(localStorage.getItem('laftah_draft')||'null');
       if(d){
         var files={};try{files=JSON.parse(localStorage.getItem('laftah_draft_files')||'{}')}catch(e){}

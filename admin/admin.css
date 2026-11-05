@@ -93,3 +93,5 @@ label.chk input{width:auto}
 .side-foot .btn.primary{background:var(--brulee);border-color:var(--brulee);color:#fff}
 .side-foot .btn.primary:hover{background:#b48a69}
 .side-foot .dot{background:#fff;box-shadow:none}
+
+.demo-bar{position:sticky;top:0;z-index:60;background:var(--brulee);color:#fff;font:700 13px var(--sans);text-align:center;padding:9px 14px}

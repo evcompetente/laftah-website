@@ -23,7 +23,18 @@ const S={repo:'',branch:'main',token:'',content:null,orig:'',origSha:'',defaults
 const store=()=>localStorage.getItem('laftah_admin_token')?localStorage:sessionStorage;
 
 /* ---------- GitHub API ---------- */
-async function gh(path,opt){opt=opt||{};
+const DEMO=!!window.LAFTAH_DEMO;
+async function demoGh(path,opt){
+  const txt=async u=>(await fetch(u,{cache:'no-store'})).text(),ok=o=>Promise.resolve(o);
+  if(path==='user'||/^repos\/[^/]+\/[^/]+$/.test(path))return ok({});
+  if(path.indexOf('contents/content/content.js')>-1)return ok({sha:'demo',content:b64(await txt('../content/content.js'))});
+  if(path.indexOf('contents/index.html')>-1)return txt('../index.html');
+  if(path.indexOf('/commits?')>-1)return ok([{commit:{author:{date:new Date().toISOString()},message:'Demo content'}}]);
+  if(/git\/ref\/heads/.test(path))return ok({object:{sha:'h'}});
+  if(/git\/commits\/h$/.test(path))return ok({tree:{sha:'t'}});
+  return ok({sha:'demo-'+Math.random().toString(36).slice(2)});
+}
+async function gh(path,opt){opt=opt||{};if(DEMO)return demoGh(path,opt);
   const r=await fetch('https://api.github.com/'+path,{method:opt.method||'GET',headers:Object.assign({'Authorization':'Bearer '+S.token,'Accept':opt.raw?'application/vnd.github.raw+json':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'},opt.body?{'Content-Type':'application/json'}:{}),body:opt.body?JSON.stringify(opt.body):undefined,cache:'no-store'});
   if(!r.ok){let m='';try{m=(await r.json()).message}catch(e){}const e=new Error(m||('GitHub error '+r.status));e.status=r.status;throw e}
   return opt.raw?r.text():r.json()}
@@ -236,7 +247,7 @@ async function publish(message,prog){
 
 /* ---------- shell ---------- */
 function preview(){try{localStorage.setItem('laftah_draft',JSON.stringify(S.content));const fl={};S.files.forEach((v,p)=>{if(v.pending&&v.dataUrl&&v.image)fl[p]=v.dataUrl});localStorage.setItem('laftah_draft_files',JSON.stringify(fl))}catch(e){toast('Could not save the draft for preview (storage full).',true);return}
-  window.open('../index.html?preview=1','_blank')}
+  const a=h('a',{href:'../index.html?preview=1#preview',target:'_blank',rel:'noopener'});document.body.append(a);a.click();a.remove()}
 function go(p){location.hash='#/'+p}
 function render(){const p=(location.hash.replace('#/','')||'dashboard');const page=P[p]?p:'dashboard';
   $('#nav').querySelectorAll('a').forEach(a=>a.classList.toggle('on',a.dataset.p===page));
@@ -253,6 +264,7 @@ $('#gateForm').addEventListener('submit',async e=>{e.preventDefault();const b=$(
   try{await signIn($('#gRepo').value,$('#gBranch').value,$('#gToken').value,$('#gRemember').checked)}
   catch(x){er.textContent=x.status===401?'That token was not accepted.':x.status===404?'Repository or file not found. Check the repository name and that the token has access to it.':(x.message||'Could not sign in.')}
   b.disabled=false;b.textContent='Sign in'});
+if(DEMO){(async function(){try{S.repo='demo/laftah-website';S.branch='main';S.token='demo';await loadAll();boot();const bar=h('div',{class:'demo-bar',text:'Demo mode: you can try everything, but nothing here changes the real website. Publish only simulates.'});document.body.prepend(bar)}catch(e){$('#gErr').textContent='Demo could not start: '+e.message}})();return}
 (async function(){const sv=localStorage.getItem('laftah_admin_token')||sessionStorage.getItem('laftah_admin_token');if(!sv)return;
   try{const o=JSON.parse(sv);await signIn(o.repo,o.branch,o.token,!!localStorage.getItem('laftah_admin_token'))}catch(e){$('#gErr').textContent='Please sign in again.'}})();
 })();
